@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Checkout</h2>
+
+    <div id="cartItemsList" class="mb-4"></div>
+
+    <h4>Total Price: <span id="totalPrice"></span></h4>
+
+    <button id="placeOrderBtn" class="btn btn-primary">Place Order</button>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Get cart items from Local Storage
+      let cartItems = localStorage.getItem('cartItems');
+      cartItems = cartItems ? JSON.parse(cartItems) : [];
+
+      // Update cart items UI
+      function updateCartItems() {
+        $('#cartItemsList').empty();
+
+        if (cartItems.length === 0) {
+          $('#cartItemsList').append('<p>Your cart is empty.</p>');
+        } else {
+          const totalPrice = calculateTotalPrice();
+
+          for (const item of cartItems) {
+            $('#cartItemsList').append(`
+              <div class="card mb-2">
+                <div class="card-body">
+                  <h6 class="card-title">${item.name}</h6>
+                  <p class="card-text">Price: ${item.price}</p>
+                  <p class="card-text">Quantity: ${item.quantity}</p>
+                </div>
+              </div>
+            `);
+          }
+
+          $('#totalPrice').text(`Rp. ${totalPrice.toLocaleString()}`);
+        }
+      }
+
+      // Calculate total price
+      function calculateTotalPrice() {
+        let totalPrice = 0;
+
+        for (const item of cartItems) {
+          totalPrice += item.price * item.quantity;
+        }
+
+        return totalPrice;
+      }
+
+      // Place order button click event
+      $('#placeOrderBtn').click(function() {
+        if (cartItems.length > 0) {
+          // Perform place order process
+          alert('Order placed successfully!');
+          cartItems = []; // Clear the cartItems array
+          localStorage.removeItem('cartItems'); // Remove cartItems from Local Storage
+          updateCartItems();
+        } else {
+          alert('Your cart is empty. Add some products before placing an order.');
+        }
+      });
+
+      // Update cart items UI when page loads
+      updateCartItems();
+    });
+  </script>
+</body>
+</html>
